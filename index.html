@@ -1,8 +1,19 @@
-<canvas width="500" height="500" id="canvas">
-    Twoja przeglądarka nie wpsiera canvas :(
-</canvas>
+<!DOCTYPE html>
+<html>
 
+<head>
+    <title>Goblin Lake</title>
+    <link rel="stylesheet" href="https://unpkg.com/terminal.css@0.7.1/dist/terminal.min.css" />
+</head>
 
+<body>
+    <canvas width="500" height="500" id="canvas">
+        Canvas is not supported by your browser :(
+    </canvas>
+    <p>> Hold left mouse button to move, try to escape goblin and get to land safe. Created by <a href="https://ofedoruk.pl">Oleksandr Fedoruk</a>.</p>
+</body>
+
+</html>
 <script>
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
@@ -20,7 +31,7 @@
     let goblinX = 250;
     let goblinY = 150;
     let goblin = 0.0;
-    let goblinSpeed = 10;
+    let goblinSpeed = 12;
 
     function initGame() {
         mousePress = false;
@@ -48,8 +59,8 @@
         canvas.width = canvas.width;
         if (mousePressedEvent) {
             const _z = 3;
-            const a = mousePressedEvent.x - 10 - playerX;
-            const b = mousePressedEvent.y - 10 - playerY;
+            const a = mousePressedEvent.x - playerX;
+            const b = mousePressedEvent.y - playerY;
             const z = Math.sqrt(a ** 2 + b ** 2);
             const xStep = _z * a / z;
             const yStep = _z * b / z;
@@ -95,10 +106,10 @@
         ctx.fill();
 
         if (Math.abs(playerX - goblinX) < 2 && Math.abs(playerY - goblinY) < 2) {
-            alert("O nie! Zostałeś zjedzony!");
+            alert("Oh no! You've been eaten!");
             initGame();
         } else if ((250 - playerX) ** 2 + (250 - playerY) ** 2 > LAKE_RADIUS ** 2) {
-            alert("Udało Ci się uciec! Gratulacje!");
+            alert("Yay! You've escaped!");
             initGame();
         }
     }
@@ -106,9 +117,3 @@
     initGame();
     setInterval(() => render(), 24);
 </script>
-
-<style>
-    .container {
-        display: flex;
-    }
-</style>
