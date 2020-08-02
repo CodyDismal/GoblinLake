@@ -1,0 +1,107 @@
+<canvas width="500" height="500" id="canvas">
+    Twoja przeglądarka nie wpsiera canvas :(
+</canvas>
+
+
+<script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let mousePress = false;
+    let mousePressedEvent = null;
+    let targetX = 250;
+    let targetY = 250;
+
+    let lose = false;
+    let win = false;
+    const LAKE_RADIUS = 100;
+    let playerX = 250;
+    let playerY = 250;
+
+    let goblinX = 250;
+    let goblinY = 150;
+    let goblin = 0.0;
+
+    function initGame() {
+        mousePress = false;
+        mousePressedEvent = null;
+        targetX = 250;
+        targetY = 250;
+        lose = false;
+        win = false;
+        playerX = 250;
+        playerY = 250;
+        goblinX = 250;
+        goblinY = 150;
+        goblin = 0.0;
+    }
+
+    canvas.addEventListener("mousedown", (e) => { mousePress = true; mousePressedEvent = e; });
+    canvas.addEventListener("mousemove", (e) => mousePress ? mousePressedEvent = e : mousePressedEvent = null);
+    canvas.addEventListener("mouseup", () => mousePress = false);
+
+    function render() {
+        if (lose || win) {
+            return;
+        }
+
+        canvas.width = canvas.width;
+        if (mousePressedEvent) {
+            const _z = 3;
+            const a = mousePressedEvent.x - 10 - playerX;
+            const b = mousePressedEvent.y - 10 - playerY;
+            const z = Math.sqrt(a ** 2 + b ** 2);
+            const xStep = _z * a / z;
+            const yStep = _z * b / z;
+            playerX += xStep;
+            playerY += yStep;
+        }
+
+        const newAng = Math.atan2(playerY - 250, playerX - 250);
+        let diff = newAng - goblin;
+        diff < Math.PI ? diff += Math.PI * 2 : null;
+        diff > Math.PI ? diff -= Math.PI * 2 : null;
+        if (Math.abs(diff) * LAKE_RADIUS <= 9) {
+            goblin = newAng;
+        } else {
+            goblin += diff > 0 ? 9 / LAKE_RADIUS : -9 / LAKE_RADIUS
+        }
+        goblin < Math.PI ? goblin += Math.PI * 2 : null;
+        goblin > Math.PI ? goblin -= Math.PI * 2 : null;
+
+        goblinX = parseInt(250 + LAKE_RADIUS * Math.cos(goblin));
+        goblinY = parseInt(250 + LAKE_RADIUS * Math.sin(goblin));
+
+        ctx.fillStyle = "#006622";
+        ctx.fillRect(0, 0, 500, 500);
+        ctx.fillStyle = "#bda700";
+        ctx.beginPath();
+        ctx.arc(250, 250, LAKE_RADIUS + 20, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.fillStyle = "#81a7b2";
+        ctx.beginPath();
+        ctx.arc(250, 250, LAKE_RADIUS, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.fillStyle = "green";
+        ctx.beginPath();
+        ctx.arc(playerX, playerY, 5, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(goblinX, goblinY, 5, 0, 2 * Math.PI);
+        ctx.fill();
+
+        if (Math.abs(playerX - goblinX) < 2 && Math.abs(playerY - goblinY) < 2) {
+            alert("O nie! Zostałeś zjedzony!");
+            initGame();
+        } else if ((250 - playerX) ** 2 + (250 - playerY) ** 2 > LAKE_RADIUS ** 2) {
+            alert("Udało Ci się uciec! Gratulacje!");
+            initGame();
+        }
+    }
+
+    initGame();
+    setInterval(() => render(), 24);
+</script>
