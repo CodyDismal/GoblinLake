@@ -20,6 +20,7 @@
     let goblinX = 250;
     let goblinY = 150;
     let goblin = 0.0;
+    let goblinSpeed = 10;
 
     function initGame() {
         mousePress = false;
@@ -60,10 +61,10 @@
         let diff = newAng - goblin;
         diff < Math.PI ? diff += Math.PI * 2 : null;
         diff > Math.PI ? diff -= Math.PI * 2 : null;
-        if (Math.abs(diff) * LAKE_RADIUS <= 9) {
+        if (Math.abs(diff) * LAKE_RADIUS <= goblinSpeed) {
             goblin = newAng;
         } else {
-            goblin += diff > 0 ? 9 / LAKE_RADIUS : -9 / LAKE_RADIUS
+            goblin += diff > 0 ? goblinSpeed / LAKE_RADIUS : -goblinSpeed / LAKE_RADIUS
         }
         goblin < Math.PI ? goblin += Math.PI * 2 : null;
         goblin > Math.PI ? goblin -= Math.PI * 2 : null;
@@ -105,3 +106,9 @@
     initGame();
     setInterval(() => render(), 24);
 </script>
+
+<style>
+    .container {
+        display: flex;
+    }
+</style>
